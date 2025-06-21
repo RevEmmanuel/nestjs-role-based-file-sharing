@@ -28,6 +28,7 @@ async function bootstrap() {
     .addTag('Auth', 'Endpoints for user registration, login and token refresh')
     .addTag('Files', 'Endpoints for uploading, listing, and updating files')
     .addTag('Users', 'Endpoints for managing users')
+    .addTag('Health', 'Endpoints for checking application status')
     .addTag(
       'Roles',
       'Endpoints for managing roles, these endpoints can only be accessed by managers and admins',

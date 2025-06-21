@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { Role } from 'src/roles/entities/role.entity';
+import { Exclude } from 'class-transformer';
 
 @Schema()
 export class User extends Document {
@@ -11,6 +12,7 @@ export class User extends Document {
   email: string;
 
   @Prop()
+  @Exclude()
   password: string;
 
   @Prop({ type: Types.ObjectId, ref: Role.name })

@@ -6,6 +6,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { IamModule } from './iam/iam.module';
 import { RolesModule } from 'src/roles/roles.module';
+import { HealthModule } from './health/health.module';
+import { FileModule } from 'src/files/file.module';
 
 @Module({
   imports: [
@@ -29,8 +31,13 @@ import { RolesModule } from 'src/roles/roles.module';
 
     // Module that manages roles and permissions
     RolesModule,
-  ],
-  // Main app controller for handling root HTTP routes
+
+    // Health Check for the app
+    HealthModule,
+
+    // Module for File Management
+    FileModule,
+  ], // Main app controller for handling root HTTP routes
   controllers: [AppController],
 
   // Main app service providing business logic
