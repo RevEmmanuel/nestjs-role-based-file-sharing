@@ -12,11 +12,12 @@ import { REQUEST_USER_KEY } from 'src/iam/constants/iam.constants';
 import { ActiveUserData } from 'src/iam/interfaces/active-user.data.interface';
 import { RolePermissionsMap } from 'src/users/constants/role-permissions.map';
 import { Observable } from 'rxjs';
+import { WinstonLogger } from '../../../../config/winston.logger';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
-  private readonly logger = new Logger(PermissionsGuard.name);
+  private readonly logger = new WinstonLogger(PermissionsGuard.name);
 
   canActivate(
     context: ExecutionContext,

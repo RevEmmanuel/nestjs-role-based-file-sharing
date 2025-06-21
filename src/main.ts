@@ -49,7 +49,7 @@ async function bootstrap() {
   });
 
   await app.listen(process.env.PORT ?? 4000); // Start the application on configured port or fallback to 4000
-  console.log(`Application is running on: ${await app.getUrl()}`); // Log the application URL
+  logger.log(`Application is running on: ${await app.getUrl()}`); // Log the application URL
 }
 
 bootstrap(); // Run the bootstrap function to start the app

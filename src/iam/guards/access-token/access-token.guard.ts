@@ -12,10 +12,11 @@ import { Request } from 'express';
 import jwtConfig from 'src/iam/config/jwt.config';
 import { REQUEST_USER_KEY } from 'src/iam/constants/iam.constants';
 import { ActiveUserData } from '../../interfaces/active-user.data.interface';
+import { WinstonLogger } from '../../../../config/winston.logger';
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {
-  private readonly logger = new Logger(AccessTokenGuard.name);
+  private readonly logger = new WinstonLogger(AccessTokenGuard.name);
   constructor(
     private readonly jwtService: JwtService,
     @Inject(jwtConfig.KEY)

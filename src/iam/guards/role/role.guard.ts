@@ -1,19 +1,15 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { REQUEST_USER_KEY } from 'src/iam/constants/iam.constants';
 import { ROLES_KEY } from 'src/iam/decorators/roles.decorator';
 import { ActiveUserData } from 'src/iam/interfaces/active-user.data.interface';
 import { Role } from 'src/users/enums/role.enum';
+import { WinstonLogger } from '../../../../config/winston.logger';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
-  private readonly logger = new Logger(RoleGuard.name);
+  private readonly logger = new WinstonLogger(RoleGuard.name);
   constructor(private readonly reflector: Reflector) {}
 
   canActivate(

@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Injectable,
-  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -17,10 +16,11 @@ import { RolePermissionsMap } from 'src/users/constants/role-permissions.map';
 import { UpdateFileDto } from 'src/files/dto/update-file.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { FilesGateway } from 'src/files/gateway/files.gateway';
+import { WinstonLogger } from '../../config/winston.logger';
 
 @Injectable()
 export class FilesService {
-  private readonly logger = new Logger(FilesService.name);
+  private readonly logger = new WinstonLogger(FilesService.name);
 
   constructor(
     @InjectModel(FileEntity.name) private readonly fileModel: Model<FileEntity>,
