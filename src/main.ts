@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 import { WinstonLogger } from '../config/winston.logger';
 
 async function bootstrap() {
@@ -14,6 +15,7 @@ async function bootstrap() {
   app.useLogger(logger);
   app.useGlobalPipes(new ValidationPipe()); // Automatically validate incoming requests using class-validator
   app.setGlobalPrefix('api'); // Prefix all routes with /api (e.g., /api/auth, /api/files)
+  app.useWebSocketAdapter(new IoAdapter(app));
   const swaggerAuthName: string = process.env.SWAGGER_AUTH_NAME as string; // Load Swagger authentication scheme name from environment (e.g., "JWT-auth")
   const config = new DocumentBuilder() // Define Swagger documentation setup using DocumentBuilder
     .setTitle('Secure File Sharing API')
@@ -34,6 +36,7 @@ async function bootstrap() {
     .addTag('Auth', 'Endpoints for user registration, login and token refresh')
     .addTag('Files', 'Endpoints for uploading, listing, and updating files')
     .addTag('Users', 'Endpoints for managing users')
+    .addTag('Health', 'Endpoints for checking application status')
     .addTag(
       'Roles',
       'Endpoints for managing roles, these endpoints can only be accessed by managers and admins',
