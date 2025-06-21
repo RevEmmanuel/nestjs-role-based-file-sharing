@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { WinstonLogger } from '../config/winston.logger';
+import morgan from 'morgan';
 
 async function bootstrap() {
   const appOptions = {
@@ -13,6 +14,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, appOptions); // Create the NestJS application instance
   const logger = app.get(WinstonLogger);
   app.useLogger(logger);
+  app.use(
+    morgan(':method :url :status :res[content-length] - :response-time ms'),
+  );
   app.useGlobalPipes(new ValidationPipe()); // Automatically validate incoming requests using class-validator
   app.setGlobalPrefix('api'); // Prefix all routes with /api (e.g., /api/auth, /api/files)
   app.useWebSocketAdapter(new IoAdapter(app));
