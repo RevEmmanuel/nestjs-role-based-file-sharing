@@ -25,10 +25,13 @@ async function bootstrap() {
       swaggerAuthName, // This name is important for @ApiBearerAuth annotation
     )
     .setBasePath('api') // (Optional) Sets the base path in the Swagger UI
-    .addTag('Auth', 'Endpoints for user registration and login')
+    .addTag('Auth', 'Endpoints for user registration, login and token refresh')
     .addTag('Files', 'Endpoints for uploading, listing, and updating files')
     .addTag('Users', 'Endpoints for managing users')
-    .addTag('Roles', 'Endpoints for managing roles')
+    .addTag(
+      'Roles',
+      'Endpoints for managing roles, these endpoints can only be accessed by managers and admins',
+    )
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config); // Create the Swagger document from the config and application
   // Serve Swagger UI at /api/docs and JSON at /api/docs/json

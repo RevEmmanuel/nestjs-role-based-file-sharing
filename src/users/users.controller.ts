@@ -1,55 +1,54 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
+  Logger,
+  HttpCode,
   Patch,
   Param,
-  Delete,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { ActiveUser } from 'src/iam/decorators/active-user.decorator';
 import { ActiveUserData } from 'src/iam/interfaces/active-user.data.interface';
 import { Roles } from 'src/iam/decorators/roles.decorator';
 import { Role } from './enums/role.enum';
 import { Auth } from 'src/iam/decorators/auth.decorator';
 import { AuthType } from 'src/iam/enums/auth-type.enum';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiParam } from '@nestjs/swagger';
 
 @Auth(AuthType.Bearer)
-@ApiBearerAuth(process.env.SWAGGER_AUTH_NAME)
+@ApiBearerAuth('JWT-auth')
 @Controller('users')
+@Roles(Role.Admin)
 export class UsersController {
+  private readonly logger = new Logger(UsersController.name);
+
   constructor(private readonly usersService: UsersService) {}
 
-  @Auth(AuthType.None)
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  @ApiOperation({ summary: 'Create a new user' })
+  @HttpCode(201)
+  create(
+    @Body() createUserDto: CreateUserDto,
+    @ActiveUser() user: ActiveUserData,
+  ) {
+    this.logger.log('Admin {} created user: {}', user.email, createUserDto);
     return this.usersService.create(createUserDto);
   }
 
-  @Roles(Role.Admin)
-  @Get()
-  findAll(@ActiveUser() user: ActiveUserData) {
-    console.log('ActiveUser:', user);
-    return this.usersService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
-  }
-
-  @Roles(Role.Admin)
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @Patch(':userId/role/:roleId')
+  @ApiOperation({ summary: 'Assign a role to a user by IDs in URL' })
+  @ApiParam({ name: 'userId', description: 'User ID to update role' })
+  @ApiParam({ name: 'roleId', description: 'Role ID to assign to user' })
+  async assignRole(
+    @Param('userId') userId: string,
+    @Param('roleId') roleId: string,
+    @ActiveUser() user: ActiveUserData,
+  ) {
+    this.logger.log(
+      `Admin ${user.email} assigning role ID ${roleId} to user ID: ${userId}`,
+    );
+    return await this.usersService.assignRole(userId, roleId);
   }
 }

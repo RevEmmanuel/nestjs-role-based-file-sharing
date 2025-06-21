@@ -1,4 +1,3 @@
-// signup.dto.ts
 import { IsEmail, MinLength } from 'class-validator';
 
 export class SignUpDto {
