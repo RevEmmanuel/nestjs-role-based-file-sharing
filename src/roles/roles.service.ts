@@ -1,14 +1,14 @@
-import { Injectable, NotFoundException, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Role } from 'src/roles/entities/role.entity';
 import { Permission } from 'src/roles/entities/permission.entity';
 import { Model } from 'mongoose';
 import { CreateRoleDto } from 'src/roles/dto/create-role.dto';
+import { WinstonLogger } from '../../config/winston.logger';
 
 @Injectable()
 export class RolesService {
-  private readonly logger = new Logger(RolesService.name);
-
+  private readonly logger = new WinstonLogger(RolesService.name);
   constructor(
     @InjectModel(Role.name) private readonly roleModel: Model<Role>,
     @InjectModel(Permission.name) private permissionModel: Model<Permission>,

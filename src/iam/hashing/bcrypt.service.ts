@@ -1,10 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HashingService } from './hashing.service';
 import { compare, genSalt, hash } from 'bcrypt';
+import { WinstonLogger } from '../../../config/winston.logger';
 
 @Injectable()
 export class BcryptService implements HashingService {
-  private readonly logger = new Logger(BcryptService.name);
+  private readonly logger = new WinstonLogger(BcryptService.name);
 
   async hash(data: string | Buffer): Promise<string> {
     this.logger.debug('Hashing data...');

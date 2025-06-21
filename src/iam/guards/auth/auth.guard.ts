@@ -9,12 +9,13 @@ import { Reflector } from '@nestjs/core';
 import { AccessTokenGuard } from '../access-token/access-token.guard';
 import { AuthType } from 'src/iam/enums/auth-type.enum';
 import { AUTH_KEY_TYPE } from 'src/iam/decorators/auth.decorator';
+import { WinstonLogger } from '../../../../config/winston.logger';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   private static readonly defaultAuthType = AuthType.Bearer;
   private authTypeGuardMap: Record<AuthType, CanActivate | CanActivate[]>;
-  private readonly logger = new Logger(AuthGuard.name);
+  private readonly logger = new WinstonLogger(AuthGuard.name);
 
   constructor(
     private readonly reflector: Reflector,
