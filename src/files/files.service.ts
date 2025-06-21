@@ -16,6 +16,7 @@ import { ListFilesQueryDto } from 'src/files/dto/list-files-query.dto';
 import { RolePermissionsMap } from 'src/users/constants/role-permissions.map';
 import { UpdateFileDto } from 'src/files/dto/update-file.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { FilesGateway } from 'src/files/gateway/files.gateway';
 
 @Injectable()
 export class FilesService {
@@ -23,6 +24,7 @@ export class FilesService {
 
   constructor(
     @InjectModel(FileEntity.name) private readonly fileModel: Model<FileEntity>,
+    private readonly filesGateway: FilesGateway,
     private eventEmitter: EventEmitter2,
   ) {}
 
@@ -62,6 +64,7 @@ export class FilesService {
       `File uploaded: "${file.originalname}" (${file.mimetype}, ${file.size} bytes) by user ${ownerId}`,
     );
     const createdFile = await created.save();
+    this.filesGateway.broadcastNewFile(createdFile);
     this.eventEmitter.emit('audit.log', {
       action: 'upload',
       resourceId: createdFile.id as string,
@@ -145,6 +148,7 @@ export class FilesService {
 
     await file.save();
     this.logger.log(`File metadata updated (ID: ${fileId})`);
+    this.filesGateway.notifyOwnerMetadataUpdate(file.ownerId, file);
     this.eventEmitter.emit('audit.log', {
       action: 'update',
       resourceId: file.id as string,
