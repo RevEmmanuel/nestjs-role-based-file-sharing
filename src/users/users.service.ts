@@ -2,7 +2,6 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
-  Logger,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -10,11 +9,11 @@ import { Role } from 'src/roles/entities/role.entity';
 import { Model, Types } from 'mongoose';
 import { User } from 'src/users/entities/user.entity';
 import { HashingService } from 'src/iam/hashing/hashing.service';
+import { WinstonLogger } from '../../config/winston.logger';
 
 @Injectable()
 export class UsersService {
-  private readonly logger = new Logger(UsersService.name);
-
+  private readonly logger = new WinstonLogger(UsersService.name);
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
     @InjectModel(Role.name) private readonly roleModel: Model<Role>,

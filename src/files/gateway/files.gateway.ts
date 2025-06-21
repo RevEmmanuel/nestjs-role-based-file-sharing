@@ -5,14 +5,14 @@ import {
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { Logger } from '@nestjs/common';
+import { WinstonLogger } from '../../../config/winston.logger';
 
 @WebSocketGateway({ cors: true, namespace: '/websocket-connect' })
 export class FilesGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  private readonly logger = new Logger(FilesGateway.name);
+  private readonly logger = new WinstonLogger(FilesGateway.name);
 
   // Map userId -> socket.id[]
   private readonly userSockets = new Map<string, string[]>();

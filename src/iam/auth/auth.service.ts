@@ -2,7 +2,6 @@ import {
   ConflictException,
   Inject,
   Injectable,
-  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -19,10 +18,11 @@ import { ActiveUserData } from '../interfaces/active-user.data.interface';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { RefreshTokenIdsStorage } from '../storage/refresh-token-ids.storage/refresh-token-ids.storage';
 import { randomUUID } from 'crypto';
+import { WinstonLogger } from '../../../config/winston.logger';
 
 @Injectable()
 export class AuthService {
-  private readonly logger = new Logger(AuthService.name);
+  private readonly logger = new WinstonLogger(AuthService.name);
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
     @InjectModel(Role.name) private readonly roleModel: Model<Role>,

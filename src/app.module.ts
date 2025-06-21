@@ -10,6 +10,7 @@ import { HealthModule } from './health/health.module';
 import { FileModule } from 'src/files/file.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AuditModule } from 'src/audits/audits.module';
+import { LoggerModule } from 'src/logger/logger.module';
 
 @Module({
   imports: [
@@ -44,6 +45,9 @@ import { AuditModule } from 'src/audits/audits.module';
 
     // Module for Audit
     AuditModule,
+
+    // Module for winston logger
+    LoggerModule,
   ], // Main app controller for handling root HTTP routes
   controllers: [AppController],
 

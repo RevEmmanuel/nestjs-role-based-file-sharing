@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
+import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Permission as PermissionEnum } from 'src/users/enums/permission.enum';
@@ -7,11 +7,13 @@ import { Permission } from 'src/roles/entities/permission.entity';
 import { RolePermissionsMap } from 'src/users/constants/role-permissions.map';
 import { User } from 'src/users/entities/user.entity';
 import { HashingService } from 'src/iam/hashing/hashing.service';
+import { WinstonLogger } from '../../../config/winston.logger';
 
 @Injectable()
 export class UsersRolesAndPermissionsSeeder implements OnApplicationBootstrap {
-  private readonly logger = new Logger(UsersRolesAndPermissionsSeeder.name);
-
+  private readonly logger = new WinstonLogger(
+    UsersRolesAndPermissionsSeeder.name,
+  );
   constructor(
     @InjectModel(Permission.name)
     private readonly permissionModel: Model<Permission>,

@@ -1,14 +1,11 @@
-import {
-  OnApplicationBootstrap,
-  OnApplicationShutdown,
-  Logger,
-} from '@nestjs/common';
+import { OnApplicationBootstrap, OnApplicationShutdown } from '@nestjs/common';
 import { Redis } from 'ioredis';
+import { WinstonLogger } from '../../../../config/winston.logger';
 
 export class RefreshTokenIdsStorage
   implements OnApplicationBootstrap, OnApplicationShutdown
 {
-  private readonly logger = new Logger(RefreshTokenIdsStorage.name);
+  private readonly logger = new WinstonLogger(RefreshTokenIdsStorage.name);
   private redisClient: Redis;
 
   onApplicationBootstrap() {
@@ -19,7 +16,7 @@ export class RefreshTokenIdsStorage
     });
     this.redisClient.on('connect', () => this.logger.log('Redis connected'));
     this.redisClient.on('error', (err) =>
-      this.logger.error('Redis error', err),
+      this.logger.error('Redis error', err.message),
     );
   }
 

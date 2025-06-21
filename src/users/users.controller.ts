@@ -2,7 +2,6 @@ import {
   Controller,
   Post,
   Body,
-  Logger,
   HttpCode,
   Patch,
   Param,
@@ -16,13 +15,14 @@ import { Role } from './enums/role.enum';
 import { Auth } from 'src/iam/decorators/auth.decorator';
 import { AuthType } from 'src/iam/enums/auth-type.enum';
 import { ApiBearerAuth, ApiOperation, ApiParam } from '@nestjs/swagger';
+import { WinstonLogger } from '../../config/winston.logger';
 
 @Auth(AuthType.Bearer)
 @ApiBearerAuth('JWT-auth')
 @Controller('users')
 @Roles(Role.Admin)
 export class UsersController {
-  private readonly logger = new Logger(UsersController.name);
+  private readonly logger = new WinstonLogger(UsersController.name);
 
   constructor(private readonly usersService: UsersService) {}
 
@@ -33,7 +33,7 @@ export class UsersController {
     @Body() createUserDto: CreateUserDto,
     @ActiveUser() user: ActiveUserData,
   ) {
-    this.logger.log('Admin {} created user: {}', user.email, createUserDto);
+    this.logger.log(`Admin ${user.email} created user: ${createUserDto}`);
     return this.usersService.create(createUserDto);
   }
 

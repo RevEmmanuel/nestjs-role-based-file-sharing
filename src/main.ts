@@ -3,10 +3,20 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { IoAdapter } from '@nestjs/platform-socket.io';
+import { WinstonLogger } from '../config/winston.logger';
+import morgan from 'morgan';
 
 async function bootstrap() {
-  const appOptions = { cors: true }; // Enable CORS support (e.g., for frontend app access)
+  const appOptions = {
+    cors: true, // Enable CORS support (e.g., for frontend app access)
+    bufferLogs: true,
+  };
   const app = await NestFactory.create(AppModule, appOptions); // Create the NestJS application instance
+  const logger = app.get(WinstonLogger);
+  app.useLogger(logger);
+  app.use(
+    morgan(':method :url :status :res[content-length] - :response-time ms'),
+  );
   app.useGlobalPipes(new ValidationPipe()); // Automatically validate incoming requests using class-validator
   app.setGlobalPrefix('api'); // Prefix all routes with /api (e.g., /api/auth, /api/files)
   app.useWebSocketAdapter(new IoAdapter(app));
@@ -43,7 +53,7 @@ async function bootstrap() {
   });
 
   await app.listen(process.env.PORT ?? 4000); // Start the application on configured port or fallback to 4000
-  console.log(`Application is running on: ${await app.getUrl()}`); // Log the application URL
+  logger.log(`Application is running on: ${await app.getUrl()}`); // Log the application URL
 }
 
 bootstrap(); // Run the bootstrap function to start the app
