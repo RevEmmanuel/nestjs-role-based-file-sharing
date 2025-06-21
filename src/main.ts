@@ -2,10 +2,16 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { WinstonLogger } from '../config/winston.logger';
 
 async function bootstrap() {
-  const appOptions = { cors: true }; // Enable CORS support (e.g., for frontend app access)
+  const appOptions = {
+    cors: true, // Enable CORS support (e.g., for frontend app access)
+    bufferLogs: true,
+  };
   const app = await NestFactory.create(AppModule, appOptions); // Create the NestJS application instance
+  const logger = app.get(WinstonLogger);
+  app.useLogger(logger);
   app.useGlobalPipes(new ValidationPipe()); // Automatically validate incoming requests using class-validator
   app.setGlobalPrefix('api'); // Prefix all routes with /api (e.g., /api/auth, /api/files)
   const swaggerAuthName: string = process.env.SWAGGER_AUTH_NAME as string; // Load Swagger authentication scheme name from environment (e.g., "JWT-auth")
