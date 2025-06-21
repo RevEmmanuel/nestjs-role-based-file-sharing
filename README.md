@@ -13,6 +13,24 @@ These instructions will get you a copy of the project up and running on your loc
 
 ## Table of Contents
 
+- [Installation](#installation)
+- [Project Overview](#project-overview)
+- [Features](#features)
+- [Architecture](#architecture)
+- [Project Structure](#project-structure)
+- [File Storage Structure](#file-storage-structure)
+- [Logging](#logging)
+- [Initial Data Seeding](#initial-data-seeding)
+- [Default Users Credentials](#default-users-credentials)
+- [Database Seeding](#database-seeding)
+- [Defining & Assigning Roles](#defining--assigning-roles)
+- [Roles](#roles)
+- [Accessing the Active User](#accessing-the-active-user)
+- [API Endpoints](#api-endpoints)
+- [Future Improvements](#future-improvements)
+- [Acknowledgments](#acknowledgments)
+- [Contact](#contact)
+- [License](#license)
 
 ### Installation
 
@@ -62,7 +80,13 @@ This API allows different user roles (Admin, Employee, Manager, Guest) to perfor
   Manage permissions such as file upload, read, update, delete, share, audit view, and user/role management.
 
 - ### Secure File Uploading & Management
-  Upload files with metadata, update file information, delete and share files securely.
+  Upload files with metadata, update file information, delete and share files securely. 
+  Supports fine-grained access control — users can only see files they own or are permitted to view.
+
+
+- ### File Encryption at Rest
+  Uploaded files are encrypted before being stored on disk for enhanced security and compliance.
+
 
 - ### Token Refreshing
   Secure refresh token workflow to maintain user sessions safely.
@@ -70,7 +94,7 @@ This API allows different user roles (Admin, Employee, Manager, Guest) to perfor
 - ### Audit Logging
   Tracks user actions for compliance and troubleshooting.
 
-- ### Real-Time Notifications (planned)
+- ### Real-Time Notifications
   Use WebSockets to notify users about file shares or system events in real-time.
 
 - ### Swagger API Documentation
@@ -92,20 +116,65 @@ This API allows different user roles (Admin, Employee, Manager, Guest) to perfor
 - ### Guards and Middleware
   Implements AccessTokenGuard, RolesGuard, PermissionsGuard to protect routes.
 
+- ### Event-Driven Logging
+  Uses an event emitter (and potentially a queue) to capture and record audit actions asynchronously.
+
+
 ## Project Structure
 
 ```plaintext
 src/
+├── audits/        # Audit module, contains Audit logging via event emitter and queue
+├── files/         # Files module, File upload, listing, metadata, sharing
+├── health/        # Health module, for checking db health status among others
 ├── iam/           # IAM module, contains authentication and authorization logic
+├── logger/        # Logger module, exports Winston Logger
 ├── roles/         # Roles and Permissions module, contains apis for creating roles and viewing permissions
 ├── users/         # Users module
 ├── app.module.ts  # Main application module
 ├── main.ts        # Entry point of the application
 ```
+
+## File Storage Structure
+
+Uploaded files are stored locally in the `uploads/` directory at the root of the project. Files are encrypted before being written to disk.
+
+```plaintext
+nestjs-role-based-file-sharing/
+├── uploads/          # Encrypted uploaded files are saved here
+│   ├── 1718980973000-report.pdf
+│   └── ...
+```
+> **Note:** The ``uploads/`` folder is not pushed to GitHub. Only the directory is versioned but file contents are excluded using .gitignore.
+
+## Logging
+The application uses a combination of Winston and Morgan for structured and request-level logging.
+
+### Winston Logger
+Winston is used for application-level logging across services, including:
+- File uploads
+- Metadata updates
+- Permission and auth guards
+- Role/permission creation
+- Error tracing
+  Log output is saved in the `` logs/ directory``:
+
+```plaintext
+logs/
+```
+Each service (e.g., FilesService) initializes a WinstonLogger instance with context:
+
+```typescript
+private readonly logger = new WinstonLogger(FilesService.name);
+```
+
+## Morgan Middleware
+Morgan logs every HTTP request in a concise format. These logs are written to the console
+
 ## Initial Data Seeding
 On application startup, the system automatically seeds the database with the following:
 
-- Default Permissions: All permissions like file.upload, file.read, user.manage, etc.
+ - Default Permissions: All permissions like file.upload, file.read, user.manage, etc.
 
 - Default Roles: Roles such as admin, employee, manager, and guest are created and assigned appropriate permissions.
 
@@ -197,6 +266,14 @@ async findAll(@ActiveUser() user: ActiveUserData): Promise<User[]> {
 - `GET /roles/permissions`: Get all permissions
 - `GET /roles/id`: Get a role by ID
 - `GET /roles/permissions/id`: Get a permissions by ID
+
+
+### Files
+
+- `GET /files`: List files visible to the user, with pagination, search, and filtering options.
+- `POST /files`: Upload a new file with metadata (tags, description).
+- `PATCH /files/:id`: Update metadata (tags, description) of a file.
+
 
 ## Future Improvements
 
