@@ -7,7 +7,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
-    EventEmitterModule.forRoot(), // 👈 required once
+    EventEmitterModule.forRoot(),
     MongooseModule.forFeature([
       { name: AuditLog.name, schema: AuditLogSchema },
     ]),
