@@ -174,11 +174,11 @@ Morgan logs every HTTP request in a concise format. These logs are written to th
 ## Initial Data Seeding
 On application startup, the system automatically seeds the database with the following:
 
- - Default Permissions: All permissions like file.upload, file.read, user.manage, etc.
+ - **Default Permissions**: All permissions like file.upload, file.read, user.manage, etc.
 
-- Default Roles: Roles such as admin, employee, manager, and guest are created and assigned appropriate permissions.
+- **Default Roles**: Roles such as admin, employee, manager, and guest are created and assigned appropriate permissions.
 
-- Default Users: Sample users are created for each role to facilitate immediate testing and usage.
+- **Default Users**: Sample users are created for each role to facilitate immediate testing and usage.
 
 This ensures that the system is ready to use out-of-the-box without manual setup of roles and permissions.
 
@@ -222,13 +222,13 @@ async findAll(): Promise<User[]> {
 ```
 
 ## Roles
-- Admin: Has all permissions.
+- **Admin**: Has all permissions.
 
-- Employee: Can upload, read, update own files, view audit.
+- **Employee**: Can upload, read, update own files, view audit.
 
-- Manager: Can read all files, manage users.
+- **Manager**: Can read all files, manage users.
 
-- Guest: Can only view public files.
+- **Guest**: Can only view public files.
 
 Roles are stored in MongoDB and linked to users by ObjectId.
 

@@ -8,8 +8,13 @@ import {
 } from '@nestjs/terminus';
 import { Roles } from 'src/iam/decorators/roles.decorator';
 import { Role } from 'src/users/enums/role.enum';
+import { Auth } from 'src/iam/decorators/auth.decorator';
+import { AuthType } from 'src/iam/enums/auth-type.enum';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('health')
+@Auth(AuthType.Bearer)
+@ApiBearerAuth('JWT-auth')
 @Roles(Role.Admin, Role.Manager, Role.Employee)
 export class HealthController {
   constructor(

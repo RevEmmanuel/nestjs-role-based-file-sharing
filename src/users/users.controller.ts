@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  HttpCode,
-  Patch,
-  Param,
-} from '@nestjs/common';
+import { Body, Controller, HttpCode, Param, Patch, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ActiveUser } from 'src/iam/decorators/active-user.decorator';
@@ -20,7 +13,7 @@ import { WinstonLogger } from '../../config/winston.logger';
 @Auth(AuthType.Bearer)
 @ApiBearerAuth('JWT-auth')
 @Controller('users')
-@Roles(Role.Admin)
+@Roles(Role.Admin, Role.Manager)
 export class UsersController {
   private readonly logger = new WinstonLogger(UsersController.name);
 
