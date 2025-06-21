@@ -74,8 +74,8 @@ export class FilesController {
   async updateFileMetadata(
     @Param('id') fileId: string,
     @Body() dto: UpdateFileDto,
+    @ActiveUser() user: ActiveUserData,
   ) {
-    console.log(dto);
-    return this.filesService.updateFileMetadata(fileId, dto);
+    return this.filesService.updateFileMetadata(fileId, dto, user.sub);
   }
 }
